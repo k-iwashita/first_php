@@ -20,15 +20,7 @@
   <main>
     <h2>practice</h2>
     <?php
-    try {
-      $db = new PDO(
-        'mysql:dbname=my_db;host=localhost;carset=utf-8',
-        'root',
-        'root'
-      );
-    } catch (PDOException $e) {
-      echo 'error' . $e->getMessage();
-    }
+    require('dbconnect.php');
 
     // $count = $db->exec('INSERT INTO my_items SET maker_id=1, item_name="momo", price=210, keyword="kandume, pinku, amai"');
     // echo $count . 'data';
@@ -38,19 +30,39 @@
     //   print($record["item_name"]);
     // };
 
+    if (isset($_REQUEST["page"]) && is_numeric($_REQUEST['page'])) {
+      $page = $_REQUEST['page'];
+    } else {
+      $page = 1;
+    }
 
-    $memos = $db -> query('select * from memos ORDER BY  id DESC');
+    $start = 5 * ($page - 1);
+
+    $memos = $db->prepare('select * from memos ORDER BY  id DESC limit ?, 5');
+    $memos->bindParam(1, $start, PDO::PARAM_INT);
+    $memos->execute();
     ?>
 
     <article>
-    <?php
-    while( $memo = $memos -> fetch()): 
-    ?>
-      <p><a href=""><?php print(mb_substr($memo['memo'], 0, 50));?></a></p>
-      <time> <?php print($memo['created_at']);?></time>
-      <hr>
-    <?php endwhile; ?>
-
+      <?php
+      while ($memo = $memos->fetch()) :
+      ?>
+        <p><a href="memo.php?id=<?php print($memo['id']) ?>"><?php print(mb_substr($memo['memo'], 0, 50)); ?></a></p>
+        <time> <?php print($memo['created_at']); ?></time>
+        <hr>
+      <?php endwhile; ?>
+      <?php if ( $page >= 2 ): ?>
+        <a href="index.php?page=<?php print($page - 1); ?>"><?php print($page - 1);  ?>ページ目へ</a>
+      <?php endif ?>
+      |
+      <?php
+        $counts = $db -> query('select count(*) as cnt from memos');
+        $count = $counts -> fetch();
+        $max_page = ceil($count['cnt'] / 5);
+        if ($page < $max_page) : 
+      ?>
+        <a href="index.php?page=<?php print($page + 1); ?>"><?php print($page + 1);  ?>ページ目へ</a>
+      <?php endif ?>
     </article>
   </main>
 </body>

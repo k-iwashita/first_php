@@ -20,15 +20,7 @@
   <main>
     <h2>practice</h2>
     <?php
-    try {
-      $db = new PDO(
-        'mysql:dbname=my_db;host=localhost;carset=utf-8',
-        'root',
-        'root'
-      );
-    } catch (PDOException $e) {
-      echo 'error' . $e->getMessage();
-    }
+    require('dbconnect.php');
 
     // $count = $db->exec('INSERT INTO my_items SET maker_id=1, item_name="momo", price=210, keyword="kandume, pinku, amai"');
     // echo $count . 'data';
@@ -37,11 +29,15 @@
     // while( $record = $records-> fetch()) {
     //   print($record["item_name"]);
     // };
+    $id = $_REQUEST['id'];
+    if (!is_numeric($id) || $id < 0) {
+      print('１以上の数字で指定して！');
+      exit();
+    }
 
-
-    $memos = $db -> prepare('select * from memos where id=?');
-    $memos -> execute(array($_REQUEST['id']));
-    $memo = $memos -> fetch();
+    $memos = $db->prepare('select * from memos where id=?');
+    $memos->execute(array($id));
+    $memo = $memos->fetch();
     ?>
 
     <article>

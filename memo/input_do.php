@@ -20,18 +20,15 @@
   <main>
     <pre>
       <?php
-      try {
-        $db = new PDO('mysql:dbname=my_db;host=localhost;charset=utf8', 'root', 'root');
+      require('dbconnect.php');
+      
 
         // $db -> exec('insert into memos set memo="' . $_POST['memo'] . '", created_at=NOW()');
 
         $statement = $db -> prepare('insert into memos set memo="' . $_POST['memo'] . '", created_at=NOW()');
-        $statement -> execute(array($_POST['memo']));
-        
-        echo 'success!';
-      } catch(PDOException $e) {
-        echo 'error' . $e -> getMessage();
-      };
+        $statement -> bindParam(1, $_POST["memo"]);
+        $statement -> execute();
+        echo 'succsess!';
       ?>
     </pre>
   </main>
