@@ -23,7 +23,12 @@
       try {
         $db = new PDO('mysql:dbname=my_db;host=localhost;charset=utf8', 'root', 'root');
 
-        $db -> exec('insert into memos set memo="' . $_POST['memo'] . '", created_at=NOW()');
+        // $db -> exec('insert into memos set memo="' . $_POST['memo'] . '", created_at=NOW()');
+
+        $statement = $db -> prepare('insert into memos set memo="' . $_POST['memo'] . '", created_at=NOW()');
+        $statement -> execute(array($_POST['memo']));
+        
+        echo 'success!';
       } catch(PDOException $e) {
         echo 'error' . $e -> getMessage();
       };
