@@ -39,18 +39,15 @@
     // };
 
 
-    $memos = $db -> query('select * from memos ORDER BY  id DESC');
+    $memos = $db -> prepare('select * from memos where id=?');
+    $memos -> execute(array($_REQUEST['id']));
+    $memo = $memos -> fetch();
     ?>
 
     <article>
-    <?php
-    while( $memo = $memos -> fetch()): 
-    ?>
-      <p><a href=""><?php print(mb_substr($memo['memo'], 0, 50));?></a></p>
-      <time> <?php print($memo['created_at']);?></time>
-      <hr>
-    <?php endwhile; ?>
+      <?php print($memo["memo"]); ?>
 
+      <a href="index.php">back</a>
     </article>
   </main>
 </body>
