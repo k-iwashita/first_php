@@ -43,7 +43,7 @@
     <article>
       <?php print($memo["memo"]); ?>
 
-      <a href="index.php">back</a>
+      <a href="update.php?id=<?php print($memo['id']); ?>">update</a> | <a href="index.php">back</a>
     </article>
   </main>
 </body>
